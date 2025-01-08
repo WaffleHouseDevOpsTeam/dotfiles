@@ -7,7 +7,11 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 
-;; sets the emacs window to be a good size :) 
+
+;; tabs (or lack thereof) and spaces configuration
+;; (setq-default indent-tabs-mode nil)
+;;(setq-default tab-width 4)
+;; sets the emacs window to be a good size :)
 (defun set-frame-size-according-to-resolution ()
   (interactive)
   (if window-system
