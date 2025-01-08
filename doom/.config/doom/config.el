@@ -6,8 +6,6 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "Daniel Blue"
-      user-mail-address "danielhunterblue@gmail.com")
 
 ;; sets the emacs window to be a good size :) 
 (defun set-frame-size-according-to-resolution ()
