@@ -32,32 +32,25 @@ else
 
 fi
 
-read -p "do you want to install the full suite of programs (y) or just the min install (n)" program_choice
-read -p "Do you want to install the wm programs (y) or not (n)" wm_choice
-
+# Install base or full
 case "$program_choice" in
     y|Y)
-        echo "installing the full suite of programs"
-        echo "$programs_min $programs_full"
-        $pkg_manager $programs_min $programs_full
+        echo "Installing full suite..."
+        "${pkg_manager[@]}" $programs_min $programs_full
         ;;
     n|N)
-        echo "installing the min suite of programs"
-        echo "$programs_min"
-        $pkg_manager $programs_min
+        echo "Installing minimal suite..."
+        "${pkg_manager[@]}" $programs_min
         ;;
 esac
 
+# Install WM
 case "$wm_choice" in
     y|Y)
-        echo "installing the wm programs"
-        echo "$wm_programs"
-        $pkg_manager $wm_programs
+        echo "Installing WM tools..."
+        "${pkg_manager[@]}" $wm_programs
         ;;
-    n|N)
-        echo "passing on the install of the wm programs"
-        ;;
-esac
+esacesac
 
 # doom emacs install
 # 1. Clone Doom Emacs into ~/.config/emacs
