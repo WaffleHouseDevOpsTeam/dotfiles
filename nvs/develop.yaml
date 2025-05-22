@@ -1,0 +1,27 @@
+# develop.yml
+desktops:
+  - id: 1
+    name: terminal
+    windows:
+      - command: kitty -e tmux new-session -A -s default
+
+  - id: 2
+    name: work-firefox
+    windows:
+      - command: work-firefox    # your branded Firefox instance
+
+  - id: 3
+    name: discord
+    windows:
+      - command: discord
+
+  - id: 4
+    name: music
+    windows:
+      - command: spotify
+
+  - id: 5
+    name: personal-firefox
+    windows:
+      - command: personal-firefox
+

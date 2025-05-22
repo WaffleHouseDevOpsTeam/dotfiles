@@ -1,0 +1,5 @@
+session:
+  name: mysession
+  windows:
+    - editor
+    - shell
