@@ -7,7 +7,8 @@
 
 alias ls='ls -A --color=auto'
 alias grep='grep --color=auto'
-PS1='\[\033[1;34m\][\t] \[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]\n$\[\033[0;37m\] '
+# PS1='\[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]%\[\033[0;37m\] '
+PS1='\u@\h \W % '
 
 alias xit='if [ -n "$TMUX" ]; then tmux kill-session && exit; else exit; fi'
 # beam
