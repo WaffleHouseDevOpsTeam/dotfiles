@@ -307,5 +307,9 @@ ins_right {
     padding = { left = 1 },
 }
 
+
+-- setting colors
+vim.cmd("colorscheme vague")
+
 -- Now don't forget to initialize lualine
 lualine.setup(config)
