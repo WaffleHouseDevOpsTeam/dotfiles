@@ -10,6 +10,7 @@ alias grep='grep --color=auto'
 # PS1='\[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]%\[\033[0;37m\] '
 PS1='\u@\h \W % '
 
+shopt -s autocd # cd into directory by merely typing the directory
 alias xit='if [ -n "$TMUX" ]; then tmux kill-session && exit; else exit; fi'
 # beam
 echo -ne '\x1b[2 q' 
