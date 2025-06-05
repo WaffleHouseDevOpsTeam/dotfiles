@@ -1,7 +1,7 @@
 ;; kanata config for capts to esc + ctrl
 
 (defsrc
-	caps lalt lctrl ralt rctrl
+	esc caps lalt lctrl ralt rctrl
 )
 
 (defalias
@@ -9,6 +9,7 @@
 )
 
 (deflayer bas
+    `
 	@escctrl
 	lmet
 	lalt
