@@ -11,13 +11,15 @@ alias grep='grep --color=auto'
 PS1='\u@\h \W % '
 
 shopt -s autocd # cd into directory by merely typing the directory
-alias xit='if [ -n "$TMUX" ]; then tmux kill-session && exit; else exit; fi'
 # beam
-echo -ne '\x1b[2 q' 
+# echo -ne '\x1b[2 q' 
 
 export PATH=/home/daniel/.cargo/bin:$PATH
 export PATH=/home/daniel/.config/emacs/bin:$PATH
 export QSYS_ROOTDIR="/home/daniel/.cache/yay/quartus-free/pkg/quartus-free-quartus/opt/intelFPGA/24.1/quartus/sopc_builder/bin"
+
+# vim mode
+set -o vi
 
 tmux
 clear

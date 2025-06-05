@@ -33,7 +33,7 @@ esac
 # Launch desktop layout based on session type
 case "$session" in
     develop)
-        launch_desktop 1 "terminal" "kitty -- bash -c 'tmux'"
+        launch_desktop 1 "terminal" "kitty"
         launch_desktop 2 "work-firefox" "firefox -p work"
         launch_desktop 3 "discord"
         launch_desktop 4 "spotify" "gtk-launch spotify"
@@ -44,8 +44,9 @@ case "$session" in
         launch_desktop 2 "personal-firefox" "firefox -p personal"
         ;;
     hw)
-        launch_desktop 1 "hw" "firefox -p work https://canvas.georgefox.edu; octave;"
-        launch_desktop 2 "resources" "nautilus ~/Documents/College"
+        launch_desktop 1 "hw" "firefox https://canvas.georgefox.edu -p work"
+        launch_desktop 1 "hw" "gtk-launch octave"
+        launch_desktop 2 "resources" "dolphin ~/Documents/College"
         launch_desktop 3 "spotify" "gtk-launch spotify"
         ;;
     *)
