@@ -35,13 +35,7 @@ echo "$selnum" > "$STATE_FILE"
 # Get filename at line $selnum
 selfile=$(ls "$HOME/dotfiles/wallpapers" | awk -v n="$selnum" 'NR==n')
 
-# only switch if the file exists
-if [ -f "$selfile" ]; then
-    # Set wallpaper
-    feh --bg-scale "$HOME/dotfiles/wallpapers/$selfile"
-else
-    echo "file not exits, skill issue"
-    exit 1
-fi
+feh --bg-scale "$HOME/dotfiles/wallpapers/$selfile"
+
 
 
