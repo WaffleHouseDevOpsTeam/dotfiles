@@ -15,6 +15,7 @@ fi
 case "$1" in
     1) selnum=$((selnum+1)) ;;
     2) selnum=$((selnum-1)) ;;
+    4) ;;
     3) echo "exec";;
 esac
 
@@ -35,7 +36,7 @@ echo "$selnum" > "$STATE_FILE"
 # Get filename at line $selnum
 selfile=$(ls "$HOME/dotfiles/wallpapers" | awk -v n="$selnum" 'NR==n')
 
-feh --bg-scale "$HOME/dotfiles/wallpapers/$selfile"
+feh --bg-fill "$HOME/dotfiles/wallpapers/$selfile"
 
 
 
