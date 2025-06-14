@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 os=$(uname)
 programs_min="git nvim tmux emacs python ffmpeg gcc kitty lua fastfetch grep fd fzf stow man-db ripgrep python-pip vim"
