@@ -11,7 +11,7 @@
 
 set $mod Mod4
 
-gaps inner 5 
+gaps inner 20 
 bindsym $mod+Shift+equal gaps inner all plus 5
 bindsym $mod+Shift+minus gaps inner all minus 5
 
@@ -21,7 +21,7 @@ gaps outer 0
 font pango:monospace 11 
 
 # hide title bars
-for_window [class=".*"] border pixel 1 
+for_window [class=".*"] border pixel 2 
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -170,7 +170,6 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # force certain window behaviors
-for_window [class="Okular"] move to mark dolphin 
 
 
 # resize window (you can also use the mouse for that)
@@ -182,7 +181,7 @@ mode "resize" {
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
         bindsym l resize shrink width 10 px or 10 ppt
-        bindsym kresize grow height 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
         bindsym j resize shrink height 10 px or 10 ppt
         bindsym h resize grow width 10 px or 10 ppt
 
