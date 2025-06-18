@@ -13,10 +13,46 @@ PS1='\u@\h \W % '
 
 shopt -s autocd # cd into directory by merely typing the directory
 # beam
-# echo -ne '\x1b[2 q' 
+# echo -ne '\x1b[2 q'
+#
+# fuzzy finding cd!
+fcd() {
+    local dir
+    dir=$(find ~/Documents ~/dotfiles ~ -mindepth 1 -maxdepth 3 \
+        -type d -not -path '*/\.*' | \
+        fzf --margin 10% --color="bw") && cd "$dir"
+}
 
-VISUAL=nvim
-EDITOR=nvim
+tsel() {
+    local select
+    local true_select
+    local path
+
+    select=$(tree | tac | sed '1,2d' | fzf --margin 10% --color="bw") || return
+    true_select=$(echo "$select" | sed 's/.*[├─│] *//')
+
+    path=$(find . -maxdepth 6 -name "$true_select" | head -n 1)
+
+    if [[ -z "$path" ]]; then
+        echo "Not found."
+        return 1
+    fi
+
+    if [[ -d "$path" ]]; then
+        cd "$path" || echo "Failed to cd into $path"
+    elif [[ -f "$path" ]]; then
+        "${VISUAL:-nano}" "$path"
+    else
+        echo "Not a file or directory: $path"
+    fi
+}
+# uses my sessionizer scripter 
+# (heavily inspired by the one made by the  primagen)
+alias session="$HOME/dotfiles/scripts/session.sh"
+
+
+export VISUAL=nvim
+export EDITOR=nvim
 
 export PATH=/home/daniel/.cargo/bin:$PATH
 export PATH=/home/daniel/.config/emacs/bin:$PATH

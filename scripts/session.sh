@@ -29,10 +29,9 @@ if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
     exit 0
 else
     # Check if session already exists
-    if  tmux has-session -t "$selected_name" 2>/dev/null; then
-        tmux switch-client -t "$selected_name"
-    else
+    if ! tmux has-session -t "$selected_name" 2>/dev/null; then
         tmux new-session -ds "$selected_name" -c "$selected"
     fi
 fi
 
+tmux switch-client -t "$selected_name"
