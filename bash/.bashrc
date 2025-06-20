@@ -5,6 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+source "$HOME/dotfiles/scripts/fuzzy.sh" 
 alias ls='ls -A --color=auto'
 alias grep='grep --color=auto'
 # PS1='\[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]%\[\033[0;37m\] '
@@ -15,39 +16,7 @@ shopt -s autocd # cd into directory by merely typing the directory
 # beam
 # echo -ne '\x1b[2 q'
 #
-# fuzzy finding cd!
-fcd() {
-    local dir
-    dir=$(find ~/Documents ~/dotfiles ~ -mindepth 1 -maxdepth 3 \
-        -type d -not -path '*/\.*' | \
-        fzf --margin 10% --color="bw") && cd "$dir"
-}
 
-tsel() {
-    local select
-    local true_select
-    local path
-
-    select=$(tree | tac | sed '1,2d' | fzf --margin 10% --color="bw") || return
-    true_select=$(echo "$select" | sed 's/.*[├─│] *//')
-
-    path=$(find . -maxdepth 6 -name "$true_select" | head -n 1)
-
-    if [[ -z "$path" ]]; then
-        echo "Not found."
-        return 1
-    fi
-
-    if [[ -d "$path" ]]; then
-        cd "$path" || echo "Failed to cd into $path"
-    elif [[ -f "$path" ]]; then
-        "${VISUAL:-nano}" "$path"
-    else
-        echo "Not a file or directory: $path"
-    fi
-}
-# uses my sessionizer scripter 
-# (heavily inspired by the one made by the  primagen)
 alias session="$HOME/dotfiles/scripts/session.sh"
 
 
@@ -69,5 +38,7 @@ ret () { cat /tmp/capture.out; }
 set -o vi
 
 source /home/daniel/Xilinx/Vivado/2024.2/settings64.sh
-tmux
+if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
+    tmux new
+fi
 clear

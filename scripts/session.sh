@@ -4,7 +4,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~/Documents ~/dotfiles -mindepth 1 -maxdepth 1 -type d | \
+    selected=$(find ~/Documents ~/dotfiles ~/ ~/Documents/college/Fall2025 ~/Documents/college/Spring2024 ~/Documents/College -mindepth 1 -maxdepth 1 -type d | \
         sed "s|^$HOME/||" | \
         fzf --margin 10% --color="bw")
 
