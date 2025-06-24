@@ -208,3 +208,5 @@ exec --no-startup-id $HOME/dotfiles/kanata/run_kanata.sh
 # finds out, if available)
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
+smart_gaps on
