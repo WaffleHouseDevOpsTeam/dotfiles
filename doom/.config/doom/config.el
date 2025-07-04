@@ -7,7 +7,16 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 
+;; :Ex is too powerful
+(defun +ex-open-dired ()
+  "Open dired like :Ex in Vim."
+  (interactive)
+  (dired default-directory))
 
+(evil-ex-define-cmd "Ex" #'+ex-open-dired)
+
+(setq user-full-name "Daniel Blue"
+      user-mail-address "danielhunterblue@gmail.com")
 ;; tabs (or lack thereof) and spaces configuration
 ;; (setq-default indent-tabs-mode nil)
 ;;(setq-default tab-width 4)
@@ -40,6 +49,11 @@
 ;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 ;;
+(setq doom-font
+      (font-spec :family "LigaSFMonoNerdFont"  ;; exact family name as reported by `fc-list`
+                 :size   12                         ;; pick a size you like
+                 :weight 'regular))                ;; or 'semi-light, 'bold, etc.
+
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
@@ -55,15 +69,95 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tomorrow-night)
+
+(after! doom-themes
+  (custom-set-faces!
+    '(default :background "#000000")))
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory '("~/Documents/college/Spring2025/", "~/Documents/reflections"))
-(setq org-agenda-files '("~/Documents/college/Spring2025/"))
+(setq org-directory '("~/Documents/college/", "~/Documents/reflections"))
+(setq org-agenda-files '("~/Documents/college/Fall2025/"))
+(setq org-roam-directory (file-truename "~/Documents/College/Fall2025/"))
+(setq org-roam-file-extensions '("org"))
 
+(setq global-auto-revert-mode 1)
+
+(after! org
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (eshell-term . t)
+     (C . t)
+     (latex . t)
+     (lua . t)
+     (rust . t)
+     (gnuplot . t)
+     (jupyter . t)
+     (octave . t))))
+
+(use-package! org-download
+  :after org
+  :config
+  (setq org-download-method 'directory
+        org-download-image-dir "~/Documents/College/images"
+        org-download-heading-lvl nil
+        org-download-screenshot-method "flameshot gui")
+  (add-hook 'dired-mode-hook 'org-download-enable))
+
+(use-package! gptel
+ :config
+ (setq! gptel-api-key (getenv "GPTEL_API_KEY")))
+
+(use-package! typst-mode
+    :mode ("\\.typ\\'" . typst-mode))
+
+(use-package! org-roam
+  :ensure t
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
+
+(use-package! org-roam-ui
+  :after org-roam
+  :hook (org-roam-mode . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start t))
+
+(use-package! pdf-tools)
+
+(use-package! org-noter
+  :after pdf-tools
+  :config
+  (setq org-noter-notes-search-path '("~/Documents/College")))
+
+(use-package! vterm
+  :ensure t
+  :commands vterm)
+
+(use-package! jupyter
+  :after org
+  :config
+  (require 'jupyter))
+
+;;(use-package! octave)
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -79,6 +173,7 @@
 ;;
 ;; Here are some additional functions/macros that will help you configure Doom.
 ;;
+(load! "binds.el")
 ;; - `load!' for loading external *.el files relative to this one
 ;; - `use-package!' for configuring packages
 ;; - `after!' for running code after a package has loaded
@@ -95,3 +190,26 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+(defun my/gptel-send-region-or-buffer ()
+  "Send region or buffer to GPTel."
+  (interactive)
+  (let ((text (if (use-region-p)
+                  (buffer-substring-no-properties (region-beginning) (region-end))
+                (buffer-string))))
+    (gptel-send text)))
+
+(defun my/gptel-query-org-directory ()
+  "Ask GPTel a question using all files in `org-directory`."
+  (interactive)
+  (let* ((files (directory-files-recursively org-directory "\\.org$"))
+         (context (mapconcat #'my/org-file->text files "\n\n"))
+         (query (read-string "Ask your notes: "))
+         (prompt (format "Using the following notes, answer this: %s\n\n%s" query context)))
+    (gptel-send prompt)))
+
+(defun my/org-file->text (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (org-mode)
+    (org-export-as 'plain t t)))

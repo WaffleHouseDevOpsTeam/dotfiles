@@ -1,0 +1,8 @@
+# VGTCAL VCGT curve
+# Format: input output (0-255)
+
+0 0
+64 40
+128 90
+192 140
+255 190

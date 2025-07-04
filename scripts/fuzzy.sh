@@ -2,7 +2,6 @@
 # all of my fuzzy find functions
 
 # fuzzy change directory
-
 fcd() {
     local dir
     dir=$(find ~/Documents ~/dotfiles ~ -mindepth 1 -maxdepth 3 \

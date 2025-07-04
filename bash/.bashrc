@@ -6,6 +6,7 @@
 [[ $- != *i* ]] && return
 
 source "$HOME/dotfiles/scripts/fuzzy.sh" 
+source "$HOME/secrets.sh"
 alias ls='ls -A --color=auto'
 alias grep='grep --color=auto'
 # PS1='\[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]%\[\033[0;37m\] '

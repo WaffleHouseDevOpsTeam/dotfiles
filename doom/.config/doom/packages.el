@@ -47,6 +47,16 @@
 ;; (unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
-
+(package! matlab-mode)
+(package! jupyter)
+(package! octave)
+(package! typst-mode)
+(package! org-roam)
+(package! org-download)
+(package! org-roam-ui
+  :recipe (:host github :repo "org-roam/org-roam-ui"))
+(package! org-noter)
+(package! pdf-tools)
+(package! gptel)
 (package! doom-themes)
 (package! vterm)
