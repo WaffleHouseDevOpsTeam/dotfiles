@@ -1,4 +1,3 @@
-#
 # ~/.bashrc
 # Author Daniel Blue
 
@@ -20,6 +19,9 @@ shopt -s autocd # cd into directory by merely typing the directory
 #
 
 alias session="$HOME/dotfiles/scripts/session.sh"
+
+export EMACSDIR="$HOME/.config/emacs"
+export DOOMDIR="$HOME/.config/doom"
 
 
 export VISUAL=nvim
