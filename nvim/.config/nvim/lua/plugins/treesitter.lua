@@ -9,7 +9,7 @@ return {
                 "bash", "c", "lua", "vim", "vimdoc", 
                 "markdown", "python", "java", "verilog",
                 "vhdl", "rust", "go", "cpp", "javascript",
-                "html", "regex", "org","norg"
+                "html", "regex"
             },
 		sync_install = false,
 		highlight = { enable = true },
