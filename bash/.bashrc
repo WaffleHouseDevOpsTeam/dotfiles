@@ -9,6 +9,7 @@ source "$HOME/dotfiles/scripts/fuzzy.sh"
 source "$HOME/secrets.sh"
 alias ls='ls -A --color=auto'
 alias grep='grep --color=auto'
+alias dmac='emacsclient -c -n'
 # PS1='\[\033[32m\]\u@\h \[\033[37m\]> \[\033[31m\]\w \[\033[1;37m\]%\[\033[0;37m\] '
 # mac style prompt
 PS1='\u@\h \W % '
@@ -23,7 +24,7 @@ alias session="$HOME/dotfiles/scripts/session.sh"
 
 export VISUAL=nvim
 export EDITOR=nvim
-
+export PATH=/home/daniel/dotfiles/scripts:$PATH
 export PATH=/home/daniel/.cargo/bin:$PATH
 export PATH=/home/daniel/.config/emacs/bin:$PATH
 export QSYS_ROOTDIR="/home/daniel/.cache/yay/quartus-free/pkg/quartus-free-quartus/opt/intelFPGA/24.1/quartus/sopc_builder/bin"

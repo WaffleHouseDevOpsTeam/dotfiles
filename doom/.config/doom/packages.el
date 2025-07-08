@@ -48,8 +48,12 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 (package! matlab-mode)
-(package! jupyter)
+(package! jupyter
+  :recipe (:host github :repo "emacs-jupyter/jupyter"
+           :files ("*.el" "kernelspecs")))
+(package! org-transclusion)
 (package! octave)
+(package! evil-numbers)
 (package! typst-mode)
 (package! org-roam)
 (package! org-download)

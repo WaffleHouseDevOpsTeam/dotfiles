@@ -38,7 +38,7 @@
     (add-to-list 'default-frame-alist 
          (cons 'height (/ (- (x-display-pixel-height) 220)
                              (frame-char-height)))))))
-
+(setq menu-bar-mode 1)
 (set-frame-size-according-to-resolution)
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
@@ -51,7 +51,7 @@
 ;;
 (setq doom-font
       (font-spec :family "LigaSFMonoNerdFont"  ;; exact family name as reported by `fc-list`
-                 :size   12                         ;; pick a size you like
+                 :size   14                         ;; pick a size you like
                  :weight 'regular))                ;; or 'semi-light, 'bold, etc.
 
 ;; See 'C-h v doom-font' for documentation and more examples of what they
@@ -77,14 +77,20 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
+(after! org-transclusion
+  (setq org-transclusion-allow-edit t))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory '("~/Documents/college/", "~/Documents/reflections"))
-(setq org-agenda-files '("~/Documents/college/Fall2025/"))
-(setq org-roam-directory (file-truename "~/Documents/College/Fall2025/"))
+(setq org-agenda-files
+      (append
+       (directory-files-recursively "~/Documents/college/Fall2025/" "\\.org$")
+       (directory-files-recursively "~/Documents/" "\\.org$")))
+(setq org-roam-directory (file-truename "~/Documents/college/Fall2025/"))
 (setq org-roam-file-extensions '("org"))
-
+(setq org-use-property-inheritance t)
+(setq org-hide-macro-markers t)
 (setq global-auto-revert-mode 1)
 
 (after! org
@@ -99,15 +105,20 @@
      (gnuplot . t)
      (jupyter . t)
      (octave . t))))
+(after! evil-numbers
+        (define-key evil-normal-state-map (kbd "g a") 'evil-numbers/inc-at-pt)
+        (define-key evil-normal-state-map (kbd "g x") 'evil-numbers/dec-at-pt))
 
 (use-package! org-download
   :after org
   :config
   (setq org-download-method 'directory
-        org-download-image-dir "~/Documents/College/images"
+        org-download-image-dir "~/Documents/college/images"
         org-download-heading-lvl nil
         org-download-screenshot-method "flameshot gui")
   (add-hook 'dired-mode-hook 'org-download-enable))
+
+(use-package! evil-numbers)
 
 (use-package! gptel
  :config
@@ -143,10 +154,19 @@
 
 (use-package! pdf-tools)
 
+(use-package! org-transclusion
+  :after org
+  :init
+  (map!
+   :map global-map "<f12>" #'org-transclusion-add
+   :leader
+   :prefix "n"
+   :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+
 (use-package! org-noter
   :after pdf-tools
   :config
-  (setq org-noter-notes-search-path '("~/Documents/College")))
+  (setq org-noter-notes-search-path '("~/Documents/college")))
 
 (use-package! vterm
   :ensure t
