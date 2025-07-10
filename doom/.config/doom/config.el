@@ -24,20 +24,20 @@
 (defun set-frame-size-according-to-resolution ()
   (interactive)
   (if window-system
-  (progn
-    ;; use 120 char wide window for largeish displays
-    ;; and smaller 80 column windows for smaller displays
-    ;; pick whatever numbers make sense for you
-    (if (> (x-display-pixel-width) 1280)
-           (add-to-list 'default-frame-alist (cons 'width 90))
-           (add-to-list 'default-frame-alist (cons 'width 80)))
-    ;; for the height, subtract a couple hundred pixels
-    ;; from the screen height (for panels, menubars and
-    ;; whatnot), then divide by the height of a char to
-    ;; get the height we want
-    (add-to-list 'default-frame-alist 
-         (cons 'height (/ (- (x-display-pixel-height) 220)
-                             (frame-char-height)))))))
+      (progn
+        ;; use 120 char wide window for largeish displays
+        ;; and smaller 80 column windows for smaller displays
+        ;; pick whatever numbers make sense for you
+        (if (> (x-display-pixel-width) 1280)
+            (add-to-list 'default-frame-alist (cons 'width 90))
+          (add-to-list 'default-frame-alist (cons 'width 80)))
+        ;; for the height, subtract a couple hundred pixels
+        ;; from the screen height (for panels, menubars and
+        ;; whatnot), then divide by the height of a char to
+        ;; get the height we want
+        (add-to-list 'default-frame-alist
+                     (cons 'height (/ (- (x-display-pixel-height) 220)
+                                      (frame-char-height)))))))
 (setq menu-bar-mode 1)
 (set-frame-size-according-to-resolution)
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -70,6 +70,22 @@
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-tomorrow-night)
 
+(defun my/org-disable-indent-in-journal ()
+  (when (string-match-p "/journal/" (or buffer-file-name ""))
+    (org-indent-mode -1)))
+
+(add-hook 'org-mode-hook #'my/org-disable-indent-in-journal)
+(setq org-roam-title-sources '((title headline) (slug . 0)))
+(setq org-roam-dailies-capture-templates
+      '(("j" "Journal" entry
+         "* %?\nEntered on %U\n"
+         :if-new (file+head "%<%Y-%m-%d>.org"
+                            "#+title: Journal for %<%Y-%m-%d>\n#+filetags: :journal:\n\n"))))
+(defun my/org-capture-daily-roam ()
+  (interactive)
+  (org-roam-dailies-capture-today))
+
+
 (after! doom-themes
   (custom-set-faces!
     '(default :background "#000000")))
@@ -78,20 +94,66 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 (after! org-transclusion
-  (setq org-transclusion-allow-edit t))
-
+        (setq org-transclusion-allow-edit t)
+        (setq org-transclusion-auto-add t))
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory '("~/Documents/college/", "~/Documents/reflections"))
+(setq org-roam-dailies-directory "journal/")
+(setq org-directory '("~/org"))
 (setq org-agenda-files
       (append
-       (directory-files-recursively "~/Documents/college/Fall2025/" "\\.org$")
-       (directory-files-recursively "~/Documents/" "\\.org$")))
-(setq org-roam-directory (file-truename "~/Documents/college/Fall2025/"))
+       (directory-files-recursively "~/org" "\\.org$")))
+(setq org-roam-directory (file-truename "~/org/roam"))
 (setq org-roam-file-extensions '("org"))
 (setq org-use-property-inheritance t)
 (setq org-hide-macro-markers t)
 (setq global-auto-revert-mode 1)
+(global-auto-revert-mode 1)
+(setq org-default-notes-file "~/org/inbox.org")
+(after! org
+  (add-to-list 'org-modules 'org-habit))
+(after! org
+  (setq org-habit-show-done-always-green t))
+(setq org-roam-capture-templates
+      '(("n" "Note" plain "%?"
+         :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n#+filetags: :note:\n")
+         :unnarrowed t)))
+(defun my/org-capture-note-roam ()
+  (interactive)
+  (org-roam-capture-
+   :templates (list (assoc "n" org-roam-capture-templates))))
+(setq org-capture-templates
+      '(("i" "Inbox" entry (file "~/org/inbox.org")
+         "* TODO %?\n%U\n")
+
+        ("t" "Task" entry (file+headline "~/org/agenda/tasks.org" "Tasks")
+         "* TODO %?\n%U\n")
+
+        ("m" "Misc" entry (file "~/org/agenda/inbox.org")
+         "* %?\n%U\n")
+
+        ("p" "Project Task" entry (file+headline "~/org/projects.org" "Projects")
+         "* TODO %? :project:\n%U\n")
+
+        ("h" "Habit" entry (file+headline "~/org/habits.org" "Habits")
+         "* TODO %?\nSCHEDULED: %t \n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: TODO\n:END:\n")
+
+        ("n" "Open a Roam Note"
+                plain (function my/org-capture-note-roam)
+                "")
+
+        ("j" "Open Today's Journal File"
+         plain (function my/org-capture-daily-roam)
+         "")))
+(setq org-refile-use-outline-path 'file)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+
+(setq org-habit-graph-column 50
+      org-habit-preceding-days 14
+      org-habit-following-days 7
+      org-habit-show-habits-only-for-today nil)
 
 (after! org
   (org-babel-do-load-languages
@@ -106,14 +168,14 @@
      (jupyter . t)
      (octave . t))))
 (after! evil-numbers
-        (define-key evil-normal-state-map (kbd "g a") 'evil-numbers/inc-at-pt)
-        (define-key evil-normal-state-map (kbd "g x") 'evil-numbers/dec-at-pt))
+  (define-key evil-normal-state-map (kbd "g a") 'evil-numbers/inc-at-pt)
+  (define-key evil-normal-state-map (kbd "g x") 'evil-numbers/dec-at-pt))
 
 (use-package! org-download
   :after org
   :config
   (setq org-download-method 'directory
-        org-download-image-dir "~/Documents/college/images"
+        org-download-image-dir "~/org/images"
         org-download-heading-lvl nil
         org-download-screenshot-method "flameshot gui")
   (add-hook 'dired-mode-hook 'org-download-enable))
@@ -121,11 +183,11 @@
 (use-package! evil-numbers)
 
 (use-package! gptel
- :config
- (setq! gptel-api-key (getenv "GPTEL_API_KEY")))
+  :config
+  (setq! gptel-api-key (getenv "GPTEL_API_KEY")))
 
 (use-package! typst-mode
-    :mode ("\\.typ\\'" . typst-mode))
+  :mode ("\\.typ\\'" . typst-mode))
 
 (use-package! org-roam
   :ensure t
@@ -166,7 +228,7 @@
 (use-package! org-noter
   :after pdf-tools
   :config
-  (setq org-noter-notes-search-path '("~/Documents/college")))
+  (setq org-noter-notes-search-path '("~/org/")))
 
 (use-package! vterm
   :ensure t
